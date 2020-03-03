@@ -11,7 +11,7 @@ class Doctor extends Model{
         telephone: Sequelize.STRING,
         state: Sequelize.STRING,
         city: Sequelize.STRING,
-        specialties: Sequelize.ARRAY
+        specialties: Sequelize.JSON
 
       },
       {

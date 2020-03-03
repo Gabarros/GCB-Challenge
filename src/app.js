@@ -4,20 +4,18 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const database = require('./database/config');
+require('./database');
 
 const routes = require('./routes');
 
 class App {
   constructor() {
-
     
 
     this.server = express();
 
     this.middlewares();
     this.routes();
-    this.database();
   }
 
   middlewares(){
@@ -28,15 +26,6 @@ class App {
 
   routes(){
     this.server.use(routes);
-  }
-
-  database(){
-    database.connect(function(err){
-      if(err) console.error(err);
-      console.log("Connected!");
-    
-    });
-
   }
 }
 
