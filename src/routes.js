@@ -5,31 +5,13 @@ const DoctorController = require('./app/controllers/DoctorController');
 
 const routes = new Router();
 
-routes.get('/doctors', (req, res) => {
-
-  connection.query('SELECT * FROM doctors', (err, rows, fields) => {
-    if(!err){
-      res.send(rows);
-    }else{
-      console.log(err);
-    }
-  })
-
-  return res.status(200).json({ acesso: 'Acessado' });
-});
+routes.get('/doctors', DoctorController.index);
 
 routes.post('/doctors', DoctorController.store);
 
-routes.put('/doctors', (req, res) => {
-  const { name, crm, telephone, state, city, specialties } = req.body;
-  return res.status(200).json({ name, crm, telephone, state, city, specialties });
+routes.put('/doctors', DoctorController.update);
 
-});
-
-routes.delete('/doctor/:id', (req, res) => {
-  const id = req.params.id;
-  return res.json({ "deletado o médico": id });
-});
+routes.delete('/doctors/:id', DoctorController.remove);
 
 
 module.exports = routes;

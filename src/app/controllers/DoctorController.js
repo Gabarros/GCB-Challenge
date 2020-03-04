@@ -42,6 +42,60 @@ class DoctorController{
       specialties
     });
   }
+
+  async remove(req, res){
+    const id = req.params.id;
+
+    const doctor = await Doctor.findByPk(id);
+
+    if(!doctor){
+      return res.status(400).json({ error: 'Not Found'});
+    }
+    doctor.destroy();
+    return res.status(200).json(doctor);
+
+
+  }
+
+  async update(req, res){
+    const schema = Yup.object().shape({
+      name: Yup.string().required(),
+      crm: Yup.string().required(),
+      telephone: Yup.string().required(),
+      state: Yup.string().required(),
+      city: Yup.string().required(),
+      specialties: Yup.object().required()
+    });
+
+    if(!(await schema.isValid(req.body))){
+      return res.status(400).json({ error: 'Validation Fails'});
+    }
+
+    const { id, name, crm, telephone, state, city, specialties } = req.body;
+    
+    const doctor = await Doctor.findByPk(id).catch(err => {
+      return res.status(400).json({ error: err});
+    });
+
+
+    await doctor.update({ id, name, crm, telephone, state, city, specialties }).catch(err => {
+      return res.status(400).json({ error: err});
+    });
+
+    return res.status(200).json(doctor);
+    
+  }
+
+  async index(req, res){
+    const doctors = await Doctor.findAll({
+      attributes: ['id', 'name', 'crm', 'state', 'city', 'specialties']
+    }).catch(err => {
+      return res.status(400).json(err);
+    });
+
+    return res.status(200).json(doctors);
+  }
+
 }
 
 module.exports = new DoctorController();
