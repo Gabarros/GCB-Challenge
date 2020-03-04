@@ -46,11 +46,14 @@ class DoctorController{
   async remove(req, res){
     const id = req.params.id;
 
-    const doctor = await Doctor.findByPk(id);
+    const doctor = await Doctor.findByPk(id).catch(err => {
+      return res.status(400).json({ error: err });
+    });
 
     if(!doctor){
-      return res.status(400).json({ error: 'Not Found'});
+      return res.status(400).json({ error: 'Not found' });
     }
+
     doctor.destroy();
     return res.status(200).json(doctor);
 
@@ -68,14 +71,18 @@ class DoctorController{
     });
 
     if(!(await schema.isValid(req.body))){
-      return res.status(400).json({ error: 'Validation Fails'});
+      return res.status(404).json({ error: 'Validation Fails'});
     }
 
     const { id, name, crm, telephone, state, city, specialties } = req.body;
     
     const doctor = await Doctor.findByPk(id).catch(err => {
-      return res.status(400).json({ error: err});
+      return res.status(404).json({ error: err});
     });
+
+    if(!doctor){
+      return res.status(404).json({ error: 'Not Found'});
+    }
 
 
     await doctor.update({ id, name, crm, telephone, state, city, specialties }).catch(err => {
